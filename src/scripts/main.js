@@ -65,24 +65,34 @@ const promise3 = new Promise((resolve) => {
   let leftClicked = false;
   let rightClicked = false;
 
-  document.addEventListener('mousedown', (evt) => {
+  const onMouseDown = (evt) => {
     if (evt.button === 0) {
       leftClicked = true;
 
       if (leftClicked && rightClicked) {
         resolve('Third promise was resolved');
+        cleanup();
       }
     }
-  });
+  };
 
-  document.addEventListener('contextmenu', (evt) => {
+  const onContextMenu = (evt) => {
     evt.preventDefault();
     rightClicked = true;
 
     if (leftClicked && rightClicked) {
       resolve('Third promise was resolved');
+      cleanup();
     }
-  });
+  };
+
+  const cleanup = () => {
+    document.removeEventListener('mousedown', onMouseDown);
+    document.removeEventListener('contextmenu', onContextMenu);
+  };
+
+  document.addEventListener('mousedown', onMouseDown);
+  document.addEventListener('contextmenu', onContextMenu);
 });
 
 promise3.then((msg) => showNotification(msg));
